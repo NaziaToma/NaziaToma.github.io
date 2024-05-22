@@ -1,0 +1,117 @@
+
+
+.img-left {
+    margin-top: 150px;
+    display: block;
+    border-radius: 50%; /* Make the image round */
+    width: 300px; /* Adjust the width as needed */
+    height: 300px; /* Adjust the height as needed */
+    object-fit: cover; /* Ensures the image fits within the rounded container */
+}
+
+.img-size{
+    width: 25px;
+    height: 25px;
+}
+
+.container-fluid{
+    padding-left: 40px;
+}
+
+.fs-2{
+    color: aliceblue;
+}
+
+.fs-3{
+    color: aliceblue;
+}
+
+.fs-6{
+    color: aliceblue;
+}
+.custom-gradient {
+    background: linear-gradient(to right, rgb(154, 154, 190) , rgb(18, 1, 64)); /* Example gradient from pink to orange */
+}
+
+.container-part-1{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    height: 100%;
+    min-height: 100vh; /* Ensures the container fills the viewport height */
+}
+
+.container-part-2{  
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(28, 26, 26);
+    background-color:  rgb(218, 218, 223);
+    height: 100%;
+    min-height: 100vh; /* Ensures the container fills the viewport height */
+}
+
+.fs-1{
+    margin-top: 30px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
+}
+
+.about-me-part{
+    
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.fs-5{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    color: rgba(17, 12, 64, 0.995);
+}
+
+.education-description{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.small-text {
+    font-size: 13px; /* Or any other size */
+}
+
+.small-text2 {
+    font-style: italic;
+    font-size: 12px; /* Or any other size */
+}
+
+.container-part-3{  
+
+    font-family: Arial, Helvetica, sans-serif;
+    color: azure;
+    background-color:  rgb(18, 9, 42);
+    height: 100%;
+    min-height: 100vh; /* Ensures the container fills the viewport height */
+}
+
+.project-cards{
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.card-text{
+    font-size: 13px;
+}
+
+.card-img-top {
+    height: 200px; /* Set a fixed height */
+    width: 100%; /* Make width adjust to the container */
+    object-fit: contain; /* Ensures the image covers the area without being stretched */
+  }
+
+  .card-content-bottom {
+    margin-top: auto; /* This pushes the content to the bottom */
+    padding: 16px; /* Optional: Adds some spacing inside the card */
+  }
+
+.card-footer{
+    padding-top: 10px;
+}
+
+.container-part-4{
+    
+    color: rgb(28, 26, 26);
+    background-color:  rgb(218, 218, 223);
+}
