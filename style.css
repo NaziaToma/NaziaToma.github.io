@@ -13,7 +13,9 @@
     width: 25px;
     height: 25px;
 }
-
+.card{
+    padding-top: 20px;
+}
 .container-fluid{
     padding-left: 40px;
 }
