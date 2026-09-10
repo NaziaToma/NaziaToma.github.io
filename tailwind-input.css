@@ -1,0 +1,9 @@
+/* tailwind-input.css */
+@import "tailwindcss";
+
+@theme {
+  prefix: tw-;
+
+  /* 2. Add your custom font here */
+  font-langar: "Langar", system-ui;
+}
