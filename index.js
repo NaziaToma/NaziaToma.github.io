@@ -2,13 +2,28 @@ const { createRoot } = ReactDOM;
 const { useState, useEffect } = React;
 
 function NavigationBar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth <= 768 : false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (!mobile) setIsOpen(false);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <nav
       style={{
         width: "100%",
-        padding: "1rem 2rem",
+        padding: isMobile ? "0.75rem 1.25rem" : "1rem 2rem",
         backgroundColor: "#455C48",
-        position: "relative"
+        position: "relative",
+        zIndex: 1000
       }}
     >
       <div
@@ -16,90 +31,153 @@ function NavigationBar() {
           maxWidth: "1240px",
           margin: "0 auto",
           display: "flex",
+          flexDirection: isMobile ? "column" : "row",
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: isMobile ? "stretch" : "center",
           position: "relative"
         }}
       >
-        {/* Main Nav Links (Centered in Middle) */}
-        <ul
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: "2.25rem",
-            listStyleType: "none",
-            padding: 0,
-            margin: 0,
-            fontSize: "17px"
-          }}
-        >
-          <li>
-            <a className="font-langar tw-text-4xl navbar-link" href="index.html#about">
-              About
-            </a>
-          </li>
-          <li>
-            <a className="font-langar tw-text-4xl navbar-link" href="projects.html">
-              Projects
-            </a>
-          </li>
-          <li>
-            <a className="font-langar tw-text-4xl navbar-link" href="research.html">
-              Research
-            </a>
-          </li>
-          <li>
-            <a className="font-langar tw-text-4xl navbar-link" href="blog.html">
-              Blog
-            </a>
-          </li>
-          <li>
-            <a className="font-langar tw-text-4xl navbar-link" href="gallery.html">
-              Gallery
-            </a>
-          </li>
-        </ul>
+        {/* Mobile Header Bar Row */}
+        {isMobile ? (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%"
+            }}
+          >
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle navigation"
+              style={{
+                background: "none",
+                border: "none",
+                color: "#ffffff",
+                fontSize: "1.4rem",
+                cursor: "pointer",
+                padding: "0.25rem 0.5rem"
+              }}
+            >
+              <i className={isOpen ? "fas fa-times" : "fas fa-bars"}></i>
+            </button>
 
-        {/* Right End: Resume & LinkedIn Icons Only */}
-        <div
-          style={{
-            position: "absolute",
-            right: 0,
-            display: "flex",
-            alignItems: "center",
-            gap: "0.85rem"
-          }}
-        >
-          <a
-            className="navbar-link"
-            href="cv.html"
-            title="Curriculum Vitae"
+            <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
+              <a
+                className="navbar-link"
+                href="cv.html"
+                title="Curriculum Vitae"
+                style={{
+                  color: "#FFFFFF",
+                  fontSize: "1.15rem",
+                  display: "inline-flex",
+                  alignItems: "center"
+                }}
+              >
+                <i className="fas fa-file-alt"></i>
+              </a>
+              <a
+                className="navbar-link"
+                href="https://www.linkedin.com/in/naziatabassumtoma/"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="LinkedIn Profile"
+                style={{
+                  color: "#FFFFFF",
+                  fontSize: "1.15rem",
+                  display: "inline-flex",
+                  alignItems: "center"
+                }}
+              >
+                <i className="fab fa-linkedin"></i>
+              </a>
+            </div>
+          </div>
+        ) : (
+          /* Desktop Navigation Right End Icons */
+          <div
             style={{
-              color: "#FFFFFF",
-              fontSize: "1.15rem",
-              display: "inline-flex",
-              alignItems: "center"
+              position: "absolute",
+              right: 0,
+              display: "flex",
+              alignItems: "center",
+              gap: "0.85rem"
             }}
           >
-            <i className="fas fa-file-alt"></i>
-          </a>
-          <a
-            className="navbar-link"
-            href="https://www.linkedin.com/in/naziatabassumtoma/"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="LinkedIn Profile"
+            <a
+              className="navbar-link"
+              href="cv.html"
+              title="Curriculum Vitae"
+              style={{
+                color: "#FFFFFF",
+                fontSize: "1.15rem",
+                display: "inline-flex",
+                alignItems: "center"
+              }}
+            >
+              <i className="fas fa-file-alt"></i>
+            </a>
+            <a
+              className="navbar-link"
+              href="https://www.linkedin.com/in/naziatabassumtoma/"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="LinkedIn Profile"
+              style={{
+                color: "#FFFFFF",
+                fontSize: "1.15rem",
+                display: "inline-flex",
+                alignItems: "center"
+              }}
+            >
+              <i className="fab fa-linkedin"></i>
+            </a>
+          </div>
+        )}
+
+        {/* Main Nav Links */}
+        {(!isMobile || isOpen) && (
+          <ul
             style={{
-              color: "#FFFFFF",
-              fontSize: "1.15rem",
-              display: "inline-flex",
-              alignItems: "center"
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+              alignItems: "center",
+              gap: isMobile ? "1.25rem" : "2.25rem",
+              listStyleType: "none",
+              padding: isMobile ? "1rem 0 0.5rem 0" : 0,
+              margin: isMobile ? "0.75rem 0 0 0" : 0,
+              fontSize: "17px",
+              width: isMobile ? "100%" : "auto",
+              borderTop: isMobile ? "1px solid rgba(255, 255, 255, 0.2)" : "none"
             }}
           >
-            <i className="fab fa-linkedin"></i>
-          </a>
-        </div>
+            <li>
+              <a className="font-langar tw-text-4xl navbar-link" href="index.html#about" onClick={() => isMobile && setIsOpen(false)}>
+                About
+              </a>
+            </li>
+            <li>
+              <a className="font-langar tw-text-4xl navbar-link" href="projects.html" onClick={() => isMobile && setIsOpen(false)}>
+                Projects
+              </a>
+            </li>
+            <li>
+              <a className="font-langar tw-text-4xl navbar-link" href="research.html" onClick={() => isMobile && setIsOpen(false)}>
+                Research
+              </a>
+            </li>
+            <li>
+              <a className="font-langar tw-text-4xl navbar-link" href="blog.html" onClick={() => isMobile && setIsOpen(false)}>
+                Blog
+              </a>
+            </li>
+            <li>
+              <a className="font-langar tw-text-4xl navbar-link" href="gallery.html" onClick={() => isMobile && setIsOpen(false)}>
+                Gallery
+              </a>
+            </li>
+          </ul>
+        )}
       </div>
     </nav>
   );
@@ -118,6 +196,17 @@ function Footer() {
 }
 
 function AboutMe() {
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth <= 768 : false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const newsEvents = [
     {
       date: "Sep 2026",
@@ -169,21 +258,21 @@ function AboutMe() {
     <div style={{ backgroundColor: "#f2f1ee", minHeight: "calc(100vh - 65px)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
       <div>
         {/* Top Hero Banner / About Me */}
-        <div style={{ backgroundColor: "#455C48", padding: "2.5rem 1.5rem" }}>
-          <div className="d-flex align-items-center" style={{ maxWidth: "1000px", margin: "0 auto", gap: "2rem" }}>
-            <div style={{ flex: "0 0 380px", width: "380px", display: "flex", justifyContent: "center" }}>
+        <div style={{ backgroundColor: "#455C48", padding: isMobile ? "2rem 1.25rem" : "2.5rem 1.5rem" }}>
+          <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: "center", maxWidth: "1000px", margin: "0 auto", gap: isMobile ? "1.5rem" : "2rem" }}>
+            <div style={{ flex: isMobile ? "0 0 auto" : "0 0 380px", width: isMobile ? "100%" : "380px", display: "flex", justifyContent: "center" }}>
               <img
                 src="img/Nazia pp1.jpg"
                 className="img-thumbnail img-fluid"
                 alt="Nazia Tabassum Toma"
-                style={{ borderRadius: "14px", width: "100%", maxWidth: "380px", height: "auto", boxShadow: "0 8px 24px rgba(0,0,0,0.15)" }}
+                style={{ borderRadius: "14px", width: "100%", maxWidth: isMobile ? "280px" : "380px", height: "auto", boxShadow: "0 8px 24px rgba(0,0,0,0.15)" }}
               />
             </div>
             <div style={{ color: "#FFFFFF", flex: "1" }}>
-              <p className="font-langar tw-text-4xl dancing-text" style={{ fontSize: "2.4rem", lineHeight: "1.3", marginBottom: "1rem" }}>
+              <p className="font-langar tw-text-4xl dancing-text" style={{ fontSize: isMobile ? "1.8rem" : "2.4rem", lineHeight: "1.3", marginBottom: "1rem", textAlign: isMobile ? "center" : "left" }}>
                 Hello World!🌼
               </p>
-              <p style={{ fontSize: "1.05rem", lineHeight: "1.55", marginBottom: "0.75rem", textAlign: "justify" }}>
+              <p style={{ fontSize: isMobile ? "0.95rem" : "1.05rem", lineHeight: "1.55", marginBottom: "0.75rem", textAlign: isMobile ? "left" : "justify" }}>
                 I am Nazia — an incoming Computer Science & Engineering PhD student at Santa Clara University, advised by{" "}
                 <a href="https://kailukoff.com" target="_blank" rel="noopener noreferrer" style={{ color: "#b4d8be", textDecoration: "underline", fontWeight: "600" }}>
                   Dr. Kai Lukoff
@@ -194,13 +283,13 @@ function AboutMe() {
                 </a>
                 . My research will focus on digital wellbeing and how AI and technology can help us build healthier relationships with the digital world.
               </p>
-              <p style={{ fontSize: "1rem", lineHeight: "1.55", marginBottom: "0.75rem", textAlign: "justify" }}>
+              <p style={{ fontSize: isMobile ? "0.925rem" : "1rem", lineHeight: "1.55", marginBottom: "0.75rem", textAlign: isMobile ? "left" : "justify" }}>
                 I received my Master of Engineering (MEng) in Computer Science from the University of Cincinnati, USA and my Bachelor of Science (BSc) in Computer Science & Engineering from North South University, Dhaka, Bangladesh.
               </p>
-              <p style={{ fontSize: "1rem", lineHeight: "1.55", marginBottom: "0.75rem", textAlign: "justify" }}>
+              <p style={{ fontSize: isMobile ? "0.925rem" : "1rem", lineHeight: "1.55", marginBottom: "0.75rem", textAlign: isMobile ? "left" : "justify" }}>
                 I like building things, asking “what if?” questions, and turning random ideas into research.
               </p>
-              <p style={{ fontSize: "1rem", lineHeight: "1.55", margin: 0, textAlign: "justify" }}>
+              <p style={{ fontSize: isMobile ? "0.925rem" : "1rem", lineHeight: "1.55", margin: 0, textAlign: isMobile ? "left" : "justify" }}>
                 Outside research, you will usually find me learning about productivity methods, strength training, experimenting with coffee or matcha, taking care of my plants, or trying to convince myself that I can keep them all alive. 🌱
               </p>
             </div>
@@ -208,8 +297,8 @@ function AboutMe() {
         </div>
 
         {/* News Section */}
-        <div style={{ maxWidth: "1000px", margin: "2.5rem auto 0 auto", padding: "0 1.5rem" }}>
-          <div style={{ backgroundColor: "#ffffff", borderRadius: "18px", padding: "2rem", border: "1px solid rgba(0, 0, 0, 0.08)", boxShadow: "0 8px 24px rgba(0, 0, 0, 0.04)" }}>
+        <div style={{ maxWidth: "1000px", margin: isMobile ? "1.5rem auto 0 auto" : "2.5rem auto 0 auto", padding: isMobile ? "0 1rem" : "0 1.5rem" }}>
+          <div style={{ backgroundColor: "#ffffff", borderRadius: "18px", padding: isMobile ? "1.25rem" : "2rem", border: "1px solid rgba(0, 0, 0, 0.08)", boxShadow: "0 8px 24px rgba(0, 0, 0, 0.04)" }}>
             <h2 className="font-langar" style={{ fontSize: "1.8rem", color: "#455C48", marginTop: 0, marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "10px" }}>
               <span style={{ fontSize: "1.5rem" }}>📌</span> Updates
             </h2>
@@ -220,14 +309,15 @@ function AboutMe() {
                   key={idx}
                   style={{
                     display: "flex",
-                    alignItems: "flex-start",
-                    gap: "1.25rem",
+                    flexDirection: isMobile ? "column" : "row",
+                    alignItems: isMobile ? "flex-start" : "flex-start",
+                    gap: isMobile ? "0.5rem" : "1.25rem",
                     paddingBottom: idx === newsEvents.length - 1 ? 0 : "1.25rem",
                     borderBottom: idx === newsEvents.length - 1 ? "none" : "1px solid #f0f0ee"
                   }}
                 >
                   {/* Date & Badge */}
-                  <div style={{ flex: "0 0 140px", minWidth: "140px" }}>
+                  <div style={{ flex: isMobile ? "0 0 auto" : "0 0 140px", minWidth: isMobile ? "auto" : "140px" }}>
                     <span style={{ fontFamily: "Arial, sans-serif", fontSize: "0.825rem", fontWeight: "700", color: "#455C48", backgroundColor: "#E8EFE9", padding: "4px 10px", borderRadius: "12px", display: "inline-block" }}>
                       {item.date}
                     </span>
@@ -249,6 +339,17 @@ function AboutMe() {
 }
 
 function Gallery() {
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth <= 768 : false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   /*
   const photos = window.galleryPhotos || [];
   const [lightboxIndex, setLightboxIndex] = useState(null);
@@ -283,8 +384,8 @@ function Gallery() {
   */
 
   return (
-    <div style={{ backgroundColor: "#f2f1ee", minHeight: "calc(100vh - 65px)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", padding: "3rem 1.5rem 0 1.5rem", textAlign: "center" }}>
-      <div style={{ backgroundColor: "#ffffff", borderRadius: "24px", padding: "3rem 2.5rem", maxWidth: "660px", width: "100%", boxShadow: "0 10px 30px rgba(0, 0, 0, 0.05)", border: "1px solid rgba(0, 0, 0, 0.06)", display: "flex", flexDirection: "column", alignItems: "center" }}>
+    <div style={{ backgroundColor: "#f2f1ee", minHeight: "calc(100vh - 65px)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", padding: isMobile ? "1.5rem 0.75rem 0 0.75rem" : "3rem 1.5rem 0 1.5rem", textAlign: "center" }}>
+      <div style={{ backgroundColor: "#ffffff", borderRadius: "24px", padding: isMobile ? "2rem 1.25rem" : "3rem 2.5rem", maxWidth: "660px", width: "100%", boxShadow: "0 10px 30px rgba(0, 0, 0, 0.05)", border: "1px solid rgba(0, 0, 0, 0.06)", display: "flex", flexDirection: "column", alignItems: "center" }}>
 
         {/* Cute Animated Turtle SVG with Camera (matching Blog Page style) */}
         <div style={{ position: "relative", width: "180px", height: "160px", marginBottom: "1.5rem" }}>
@@ -343,10 +444,10 @@ function Gallery() {
         </div>
 
         {/* Message Content */}
-        <h2 style={{ fontFamily: "'Langar', cursive, sans-serif", fontSize: "2rem", color: "#455C48", margin: "0 0 0.75rem 0", lineHeight: "1.3" }}>
+        <h2 style={{ fontFamily: "'Langar', cursive, sans-serif", fontSize: isMobile ? "1.6rem" : "2rem", color: "#455C48", margin: "0 0 0.75rem 0", lineHeight: "1.3" }}>
           Gallery In Progress! 📸🐢
         </h2>
-        <p style={{ fontFamily: "Arial, sans-serif", fontSize: "1.05rem", fontWeight: "600", color: "#2D3B2F", margin: "0 0 0.5rem 0" }}>
+        <p style={{ fontFamily: "Arial, sans-serif", fontSize: isMobile ? "0.95rem" : "1.05rem", fontWeight: "600", color: "#2D3B2F", margin: "0 0 0.5rem 0" }}>
           Choosing photo is a time consuming task, we are on it!
         </p>
         <p style={{ fontFamily: "Arial, sans-serif", fontSize: "0.925rem", color: "#667067", margin: "0 0 2rem 0", maxWidth: "480px", lineHeight: "1.5" }}>
@@ -355,70 +456,6 @@ function Gallery() {
 
       </div>
 
-      {/* 
-        ========================================================================
-        COMMENTED OUT GALLERY CODE (PRESERVED - DO NOT DELETE)
-        ========================================================================
-        <div className="gallery-section">
-          <div className="container py-5">
-            <div className="gallery-grid">
-              {photos.map((photo, index) => (
-                <div
-                  key={index}
-                  className="gallery-card"
-                  onClick={() => openLightbox(index)}
-                >
-                  <div className="gallery-img-wrapper">
-                    <img
-                      src={photo.url}
-                      alt={photo.caption || "Gallery Photo"}
-                      className="gallery-img"
-                    />
-                    <div className="gallery-caption-overlay">
-                      <p className="gallery-caption-text">{photo.caption}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {lightboxIndex !== null && (
-            <div className="lightbox-overlay" onClick={closeLightbox}>
-              <button className="lightbox-close" onClick={closeLightbox}>&times;</button>
-
-              <button
-                className="lightbox-arrow lightbox-arrow-left"
-                onClick={(e) => { e.stopPropagation(); prevPhoto(); }}
-              >
-                &#10094;
-              </button>
-
-              <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
-                <img
-                  src={photos[lightboxIndex].url}
-                  alt={photos[lightboxIndex].caption}
-                  className="lightbox-img"
-                />
-                {photos[lightboxIndex].caption && (
-                  <div className="lightbox-caption">
-                    {photos[lightboxIndex].caption}
-                  </div>
-                )}
-              </div>
-
-              <button
-                className="lightbox-arrow lightbox-arrow-right"
-                onClick={(e) => { e.stopPropagation(); nextPhoto(); }}
-              >
-                &#10095;
-              </button>
-            </div>
-          )}
-        </div>
-        ========================================================================
-      */}
-
       <Footer />
     </div>
   );
@@ -426,26 +463,36 @@ function Gallery() {
 
 function CV() {
   const pdfPath = "pdf/Nazia_Tabassum_Toma_CV.pdf";
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth <= 768 : false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
-    <div style={{ backgroundColor: "#f2f1ee", minHeight: "calc(100vh - 65px)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", padding: "3rem 1.5rem 0 1.5rem" }}>
+    <div style={{ backgroundColor: "#f2f1ee", minHeight: "calc(100vh - 65px)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", padding: isMobile ? "1.5rem 0.75rem 0 0.75rem" : "3rem 1.5rem 0 1.5rem" }}>
       <div style={{ maxWidth: "1000px", width: "100%", margin: "0 auto" }}>
 
         {/* Embedded Viewer Card */}
-        <div style={{ backgroundColor: "#ffffff", borderRadius: "20px", padding: "1rem", border: "1px solid rgba(0, 0, 0, 0.08)", boxShadow: "0 10px 30px rgba(0, 0, 0, 0.04)" }}>
+        <div style={{ backgroundColor: "#ffffff", borderRadius: "20px", padding: isMobile ? "0.5rem" : "1rem", border: "1px solid rgba(0, 0, 0, 0.08)", boxShadow: "0 10px 30px rgba(0, 0, 0, 0.04)" }}>
           <object
             data={pdfPath}
             type="application/pdf"
             width="100%"
-            height="850px"
+            height={isMobile ? "520px" : "850px"}
             style={{ borderRadius: "14px", display: "block" }}
           >
             <iframe
               src={pdfPath}
               title="Nazia Tabassum Toma CV"
-              style={{ width: "100%", height: "850px", border: "none", borderRadius: "14px" }}
+              style={{ width: "100%", height: isMobile ? "520px" : "850px", border: "none", borderRadius: "14px" }}
             >
-              <div style={{ textAlign: "center", padding: "3rem", fontFamily: "Arial, sans-serif" }}>
+              <div style={{ textAlign: "center", padding: isMobile ? "1.5rem 0.5rem" : "3rem", fontFamily: "Arial, sans-serif" }}>
                 <p style={{ fontSize: "1.1rem", color: "#2d3436" }}>Your browser is not embedding PDFs directly.</p>
                 <a
                   href={pdfPath}
@@ -526,10 +573,26 @@ function Projects() {
     }
   ];
 
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth <= 768 : false);
+  const [isTablet, setIsTablet] = useState(typeof window !== "undefined" ? window.innerWidth <= 992 && window.innerWidth > 768 : false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const w = window.innerWidth;
+      setIsMobile(w <= 768);
+      setIsTablet(w <= 992 && w > 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const gridCols = isMobile ? "1fr" : isTablet ? "repeat(2, 1fr)" : "repeat(3, 1fr)";
+
   return (
-    <div style={{ backgroundColor: "#f2f1ee", padding: "3.5rem 1.5rem 0 1.5rem", minHeight: "calc(100vh - 65px)", width: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-      <div style={{ maxWidth: "1240px", margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2rem", alignItems: "stretch" }}>
+    <div style={{ backgroundColor: "#f2f1ee", padding: isMobile ? "2rem 1rem 0 1rem" : "3.5rem 1.5rem 0 1.5rem", minHeight: "calc(100vh - 65px)", width: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <div style={{ maxWidth: "1240px", margin: "0 auto", width: "100%" }}>
+        <div style={{ display: "grid", gridTemplateColumns: gridCols, gap: isMobile ? "1.25rem" : "2rem", alignItems: "stretch" }}>
           {projects.map((item, index) => (
             <div
               key={index}
@@ -612,11 +675,21 @@ function Projects() {
   );
 }
 
-
 function Blog() {
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth <= 768 : false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <div style={{ backgroundColor: "#f2f1ee", minHeight: "calc(100vh - 65px)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", padding: "3rem 1.5rem 0 1.5rem", textAlign: "center" }}>
-      <div style={{ backgroundColor: "#ffffff", borderRadius: "24px", padding: "3rem 2.5rem", maxWidth: "660px", width: "100%", boxShadow: "0 10px 30px rgba(0, 0, 0, 0.05)", border: "1px solid rgba(0, 0, 0, 0.06)", display: "flex", flexDirection: "column", alignItems: "center" }}>
+    <div style={{ backgroundColor: "#f2f1ee", minHeight: "calc(100vh - 65px)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", padding: isMobile ? "1.5rem 0.75rem 0 0.75rem" : "3rem 1.5rem 0 1.5rem", textAlign: "center" }}>
+      <div style={{ backgroundColor: "#ffffff", borderRadius: "24px", padding: isMobile ? "2rem 1.25rem" : "3rem 2.5rem", maxWidth: "660px", width: "100%", boxShadow: "0 10px 30px rgba(0, 0, 0, 0.05)", border: "1px solid rgba(0, 0, 0, 0.06)", display: "flex", flexDirection: "column", alignItems: "center" }}>
 
         {/* Cute Animated Turtle SVG */}
         <div style={{ position: "relative", width: "180px", height: "160px", marginBottom: "1.5rem" }}>
@@ -673,10 +746,10 @@ function Blog() {
         </div>
 
         {/* Message Content */}
-        <h2 style={{ fontFamily: "'Langar', cursive, sans-serif", fontSize: "2rem", color: "#455C48", margin: "0 0 0.75rem 0", lineHeight: "1.3" }}>
+        <h2 style={{ fontFamily: "'Langar', cursive, sans-serif", fontSize: isMobile ? "1.6rem" : "2rem", color: "#455C48", margin: "0 0 0.75rem 0", lineHeight: "1.3" }}>
           Pardon Our Slowness! 🐢🚧
         </h2>
-        <p style={{ fontFamily: "Arial, sans-serif", fontSize: "1.05rem", fontWeight: "600", color: "#2D3B2F", margin: "0 0 0.5rem 0" }}>
+        <p style={{ fontFamily: "Arial, sans-serif", fontSize: isMobile ? "0.95rem" : "1.05rem", fontWeight: "600", color: "#2D3B2F", margin: "0 0 0.5rem 0" }}>
           This page is under construction!
         </p>
         <p style={{ fontFamily: "Arial, sans-serif", fontSize: "0.925rem", color: "#667067", margin: "0 0 2rem 0", maxWidth: "480px", lineHeight: "1.5" }}>
@@ -712,9 +785,20 @@ function Research() {
     }
   ];
 
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth <= 768 : false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <div style={{ backgroundColor: "#f2f1ee", padding: "3.5rem 1.5rem 0 1.5rem", minHeight: "calc(100vh - 65px)", width: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-      <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "2rem" }}>
+    <div style={{ backgroundColor: "#f2f1ee", padding: isMobile ? "2rem 1rem 0 1rem" : "3.5rem 1.5rem 0 1.5rem", minHeight: "calc(100vh - 65px)", width: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <div style={{ maxWidth: "1100px", margin: "0 auto", width: "100%", display: "flex", flexDirection: "column", gap: "2rem" }}>
         {researchItems.map((item, index) => (
           <div
             key={index}
@@ -725,18 +809,20 @@ function Research() {
               boxShadow: "0 8px 24px rgba(0, 0, 0, 0.04)",
               overflow: "hidden",
               display: "flex",
-              flexDirection: "row",
+              flexDirection: isMobile ? "column" : "row",
               width: "100%"
             }}
           >
             {/* Left Image / Coming Soon Box */}
             <div
               style={{
-                flex: "0 0 360px",
-                width: "360px",
-                minHeight: "240px",
+                flex: isMobile ? "0 0 200px" : "0 0 360px",
+                width: isMobile ? "100%" : "360px",
+                height: isMobile ? "200px" : "auto",
+                minHeight: isMobile ? "200px" : "240px",
                 backgroundColor: item.image ? "#ffffff" : "#f5f6f4",
-                borderRight: "1px solid rgba(0, 0, 0, 0.06)",
+                borderRight: isMobile ? "none" : "1px solid rgba(0, 0, 0, 0.06)",
+                borderBottom: isMobile ? "1px solid rgba(0, 0, 0, 0.06)" : "none",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -760,9 +846,9 @@ function Research() {
             </div>
 
             {/* Right Details & Description Box */}
-            <div style={{ flex: 1, padding: "1.75rem 2rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <div style={{ flex: 1, padding: isMobile ? "1.25rem" : "1.75rem 2rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
               <div>
-                <h3 style={{ fontSize: "1.25rem", fontWeight: "700", color: "#25282a", marginTop: 0, marginBottom: "0.75rem", lineHeight: "1.35", fontFamily: "Arial, sans-serif" }}>
+                <h3 style={{ fontSize: isMobile ? "1.1rem" : "1.25rem", fontWeight: "700", color: "#25282a", marginTop: 0, marginBottom: "0.75rem", lineHeight: "1.35", fontFamily: "Arial, sans-serif" }}>
                   {item.title}
                 </h3>
                 <p style={{ fontSize: "0.9rem", color: "#4b5257", lineHeight: "1.6", marginBottom: "1.25rem", fontFamily: "Arial, sans-serif" }}>
@@ -863,6 +949,3 @@ const cvEl = document.getElementById("cv-root");
 if (cvEl) {
   createRoot(cvEl).render(<CV />);
 }
-
-
-
