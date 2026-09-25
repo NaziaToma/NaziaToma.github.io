@@ -273,7 +273,7 @@ function AboutMe() {
                 Hello World!🌼
               </p>
               <p style={{ fontSize: isMobile ? "0.95rem" : "1.05rem", lineHeight: "1.55", marginBottom: "0.75rem", textAlign: isMobile ? "left" : "justify" }}>
-                I am Nazia — an incoming Computer Science & Engineering PhD student at Santa Clara University, advised by{" "}
+                I am Nazia, a Computer Science & Engineering PhD student at Santa Clara University, advised by{" "}
                 <a href="https://kailukoff.com" target="_blank" rel="noopener noreferrer" style={{ color: "#b4d8be", textDecoration: "underline", fontWeight: "600" }}>
                   Dr. Kai Lukoff
                 </a>{" "}
